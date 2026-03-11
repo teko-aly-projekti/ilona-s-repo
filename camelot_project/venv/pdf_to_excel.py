@@ -1,7 +1,7 @@
 import camelot
 import pandas as pd
 
-pdf_file = "taulukko.pdf"   # vaihda tähän oman PDF:n nimi
+pdf_file = "tammikuu 2023.pdf"   # vaihda tähän oman PDF:n nimi
 output_excel = "tulos.xlsx"
 
 # stream = paras kun PDF:ssä ei ole viivoja
