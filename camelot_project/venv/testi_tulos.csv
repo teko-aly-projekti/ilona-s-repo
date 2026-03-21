@@ -1,0 +1,40 @@
+Koodi Kl,,,Seloste,à-hinta Alennus,Hinta Tunnit Lkm,Summa €
+B1124,I,,"Raportointi yritykselle, tt-lääkäri",209.45,209.45 3:00 1,628.35
+B1208,I,,"Sairauspoissaolojen analysointi, tt-lääkäri",209.45,209.45 0:30 1,104.73
+C120,I,,"Osatyökykyisen seuranta, tt-lääkäri",140.00,140.00 0:45 1,105.00
+C127,I,,"Kuntoutustarpeen arvio, tt-lääkäri",209.45,209.45 1:00 1,209.45
+C131,I,,"Puhelinneuvonta ja ohjaus, tt-lääkäri",140.00,140.00 1:15 5,175.00
+C132T,I,,"Neuvonta ja ohjaus (yksilö) T, tt-lääkäri",209.45,209.45 0:30 1,104.73
+C137,I,,"Työhönpaluuarvio, tt-lääkäri",209.45,209.45 1:00 1,209.45
+C215,I,,"Työhönsijoitustarkastus, muu, tt-hoitaja",101.95,101.95 1:00 1,101.95
+C460,I,,"Erik.lääkärin työkykykons, 60 min tai yli",,245.00 1,245.00
+C537T,I,,"Neuvonta ja ohjaus (yksilö) T, tpsy",179.65,179.65 2:30 2,449.12
+E103,I,,"Audiogramma (kuuloseula), tth",46.95,46.95 1,46.95
+EC537T,I,,"Neuvonta ja ohjaus (yksilö) T, tpsy",179.65,179.65 1:15 1,224.56
+0101B,II,,"Käynti lääkärillä, enint. 20 min",46.67,46.67 1,46.67
+0101C,II,,"Käynti lääkärillä, 30 min",70.00,70.00 1,70.00
+0101CE,II,,"Käynti erikoislääkärillä, 30 min",126.00,126.00 1,126.00
+1026,II,,S -ALAT,9.90,9.90 1,9.90
+1137,II,,S -B12-Vit,63.90,63.90 1,63.90
+1395,II,,S -Ferrit,66.30,66.30 1,66.30
+1468,II,,fP-Gluk,9.90,9.90 1,9.90
+2001,II,,S -K,9.90,9.90 1,9.90
+2143,II,,S -Krea,9.90,9.90 1,9.90
+2245,II,,fS-Lipidit,29.90,29.90 1,29.90
+2382,II,,S -Na,9.90,9.90 1,9.90
+2474,II,,B -PVK+T,24.90,24.90 2,49.80
+2832,II,,S -TSH,16.90,16.90 1,16.90
+2836,II,,S -T4-V,16.90,16.90 1,16.90
+3642,II,,S -PSA,29.90,29.90 1,29.90
+6128,II,,B -HbA1c,58.00,58.00 1,58.00
+D131,II,,"Puhelinneuvonta ja ohjaus, tt-lääkäri",186.85,186.85 1:07 5,208.65
+D206,II,,"Sairaudenhoito, max 20 min, tth",29.90,29.90 1,29.90
+D420,II,,"Erik.lääkärin hoidollinen kons, 20 min",106.00,106.00 1,106.00
+E101T01,II,,"Etävastaanottokäynti, lääkäri, ma-pe",46.50,46.50 2,93.00
+E101TB,II,,"Etävastaanotto/puhelu, enintään 20 min",63.00,63.00 1,63.00
+E101TP,II,,Puhelu ja mahd. resepti hoito-ohjeineen,12.00,12.00 2,24.00
+NF1AA,II,,Lonkan röntgen,117.90,117.90 2,235.80
+WZB00U,II,,"Reseptin uusiminen, yksi tai useampi resepti",12.00,12.00 2,24.00
+KANTA MUU,,,Kantamaksu,2.10,2.10 1,2.10
+KANTA MUU,,,Kantamaksu,2.50,2.50 15,37.50
+YLEIS MUU,,,Työterveyshuollon yleismaksu,,53,74.75
