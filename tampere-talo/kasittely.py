@@ -3,7 +3,7 @@ import pandas as pd
 import glob
 import os
 
-pdf_files = glob.glob("projectpdfs/*.pdf") # Laita kaikki pdf samaan kansioon
+pdf_files = glob.glob("tampere-talo-data/*.pdf") # Laita kaikki pdf samaan kansioon
 output_excel = "tamperetalo2023.xlsx" # Nimeä excel omalla vuodella
 
 with pd.ExcelWriter(output_excel) as writer:
