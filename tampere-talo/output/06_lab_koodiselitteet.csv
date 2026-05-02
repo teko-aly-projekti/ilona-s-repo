@@ -1,0 +1,64 @@
+Koodi,Seloste,Selite
+0104T1,"B-lausunto, eritt. laaja, työterveyslääkäri",Täydennä selite käsin
+1026,S -ALAT,"S-ALAT: alaniiniaminotransferaasi, maksa-arvo"
+1046,S -AFOS,S-AFOS: alkalinen fosfataasi
+1078,S -Amyl,Täydennä selite käsin
+1128,S -ASAT,Täydennä selite käsin
+1137,S -B12-Vit,Täydennä selite käsin
+1142,S -B12-TC2,Täydennä selite käsin
+1155,U -BaktVi,Täydennä selite käsin
+1185,S -Bil,Täydennä selite käsin
+1189,S -Bil-Kj,Täydennä selite käsin
+1216,S -CRP,S-CRP: tulehdusarvo
+1216P,S -CRPp,Täydennä selite käsin
+1220,S -D-25,Täydennä selite käsin
+1395,S -Ferrit,"S-Ferrit: ferritiini, rautavarastot"
+1468,fP-Gluk,fP-Gluk: paastoglukoosi
+1471,P -Gluk,P-Gluk: plasman glukoosi
+1489,S -GT,Täydennä selite käsin
+1881P,"U-Kemseup, pika",Täydennä selite käsin
+1887,S -KysC,Täydennä selite käsin
+2001,S -K,S-K: kalium
+2019,fS-Ca-Ion,Täydennä selite käsin
+2143,S -Krea,"S-Krea: kreatiniini, munuaistoiminta"
+2203,B -La,Täydennä selite käsin
+2245,fS-Lipidit,fS-Lipidit: veren rasva-arvot
+2303,S -Mg,Täydennä selite käsin
+2360,S -MonAb-O,Täydennä selite käsin
+2382,S -Na,S-Na: natrium
+2474,B -PVK+T,B-PVK+T: perusverenkuva ja trombosyytit
+2703,Ps-StrVi,Täydennä selite käsin
+2735,S -Testo,Täydennä selite käsin
+2775,S -T3-V,Täydennä selite käsin
+2832,S -TSH,S-TSH: tyreotropiini
+2836,S -T4-V,S-T4-V: vapaa tyroksiini
+3635,Ps-StrAAg,Täydennä selite käsin
+3642,S -PSA,S-PSA: eturauhasspesifinen antigeeni
+3695,B-PVKTmd,Täydennä selite käsin
+3696,B -TVK,Täydennä selite käsin
+"3696
+II",B -TVK,Täydennä selite käsin
+"3950
+II",S -HepyAb,Täydennä selite käsin
+4043,Ts-PADGast,Täydennä selite käsin
+"4043
+II",Ts-PADGast,Täydennä selite käsin
+4054,Ts-PAD-1,Täydennä selite käsin
+4113P,B -FiDDp,Täydennä selite käsin
+4224,S -IgE-Er,Täydennä selite käsin
+"4511
+II",U -AlbKre,Täydennä selite käsin
+4764,Ts-PADColo,Täydennä selite käsin
+4816,U -CtGcNhO,Täydennä selite käsin
+5017,S -RuisE,Täydennä selite käsin
+6128,B -HbA1c,B-HbA1c: pitkäaikainen verensokeri
+6434,S -Lipidit,Täydennä selite käsin
+650,S -Reumapa,Täydennä selite käsin
+8022,S -hsCRP,Täydennä selite käsin
+"8022
+II",S -hsCRP,Täydennä selite käsin
+9828,Pt-GlukR1p,Täydennä selite käsin
+9951,fS-TtPakA,Täydennä selite käsin
+B3122,"Suunnattu selvitys työpaikalle, työfysioterapeutti",Täydennä selite käsin
+EC510E,"Ravitsemusterapeutin terveydenhoito E, etä, tunti",Täydennä selite käsin
+ERAV1,"Ravitsemusterapeutin etävastaanottokäynti, 60 min",Täydennä selite käsin
