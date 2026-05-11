@@ -1,3 +1,23 @@
+# Tämä tiedosto sisältää yhteiset apufunktiot työterveyskustannusdatan käsittelyyn.
+#
+# Käyttö:
+# - Excel-tiedostojen sheetien nimissä pitää näkyä kuukausi ja vuosi
+#   esimerkiksi: tammikuu2023.pdf, lokakuu2024 tai syyskuu2025
+# - Kuukauden loppusumman rivillä pitää olla:
+#   A-sarakkeessa "Yhteensä:"
+#   B-sarakkeessa kuukauden summa
+# - Datarivien sarakkeiden oletetaan olevan samassa rakenteessa kuin nykyisissä
+#   tamperetaloYYYY.xlsx-tiedostoissa
+#
+# Uuden vuoden lisääminen:
+# - Lisää uusi tamperetaloYYYY.xlsx-tiedosto samaan kansioon
+# - Jos sheetien nimet ovat samassa muodossa kuin aiemmin, helpers.py toimii ilman muutoksia
+#
+# Jos palvelukategorioita tai laboratoriotunnistusta halutaan laajentaa:
+# - muokkaa classify_category()-funktion avainsanoja
+# - muokkaa LAB_CODE_ALLOWLIST- ja LAB_DESC_KEYWORDS-listoja
+
+
 from __future__ import annotations
 
 import re
@@ -8,6 +28,8 @@ import pandas as pd
 from openpyxl import load_workbook
 
 
+# Kuukausikartta ilman kovakoodattua vuotta.
+# Vuosi luetaan automaattisesti sheetin nimestä.
 MONTH_MAP = {
     "tammikuu": "01",
     "helmikuu": "02",
@@ -23,6 +45,7 @@ MONTH_MAP = {
     "joulukuu": "12",
 }
 
+# Laboratoriokoodit, jotka halutaan tunnistaa varmasti labroiksi.
 LAB_CODE_ALLOWLIST = {
     "1026", "1046", "1078", "1128", "1137", "1185", "1189", "1216",
     "1270", "1395", "1468", "1471", "1489", "1784", "1881P", "2001",
@@ -33,6 +56,7 @@ LAB_CODE_ALLOWLIST = {
     "6354", "6434", "650", "8022", "9100", "9828", "9951", "10143",
 }
 
+# Avainsanat, joilla laboratoriorivejä voidaan tunnistaa myös tekstin perusteella.
 LAB_DESC_KEYWORDS = [
     "s-", "s -", "b-", "b -", "p-", "p -", "u-", "u -",
     "fp-", "fp -", "fs-", "fs -",
@@ -43,24 +67,30 @@ LAB_DESC_KEYWORDS = [
 
 
 def normalize_text(value) -> str:
+    """Normalisoi tekstin vertailua varten."""
     if value is None:
         return ""
     if isinstance(value, float) and pd.isna(value):
         return ""
+
     text = str(value).strip().lower()
     text = unicodedata.normalize("NFKD", text)
     return "".join(ch for ch in text if not unicodedata.combining(ch))
 
 
 def to_float(value):
+    """Muuttaa arvon liukuluvuksi, jos mahdollista."""
     if value is None:
         return None
     if isinstance(value, float) and pd.isna(value):
         return None
+
     text = str(value).strip().replace(",", ".")
     text = text.replace("\u00a0", "").replace(" ", "").replace("..", ".")
+
     if text == "" or text.lower() == "nan":
         return None
+
     try:
         return float(text)
     except ValueError:
@@ -68,6 +98,14 @@ def to_float(value):
 
 
 def parse_month_from_sheet(sheet_name: str) -> str:
+    """
+    Muodostaa sheetin nimestä arvon muotoon YYYY-MM.
+
+    Esimerkkejä:
+    - tammikuu2023.pdf -> 2023-01
+    - lokakuu2024 -> 2024-10
+    - syyskuu2025.pdf -> 2025-09
+    """
     normalized = normalize_text(sheet_name)
 
     year_match = re.search(r"20\d{2}", normalized)
@@ -83,6 +121,10 @@ def parse_month_from_sheet(sheet_name: str) -> str:
 
 
 def find_month_total_from_worksheet(ws, sheet_name: str) -> float:
+    """
+    Hakee kuukauden loppusumman riviltä, jossa A-sarakkeessa on 'Yhteensä:'
+    ja B-sarakkeessa summa.
+    """
     for row in ws.iter_rows(values_only=True):
         values = list(row)
         if len(values) < 2:
@@ -101,6 +143,10 @@ def find_month_total_from_worksheet(ws, sheet_name: str) -> float:
 
 
 def is_data_row(values) -> bool:
+    """
+    Tunnistaa, onko kyseessä varsinainen datarivi.
+    Sulkee pois otsikot, yhteensä-rivit ja tyhjät rivit.
+    """
     c0 = normalize_text(values[0] if len(values) > 0 else "")
     c1 = normalize_text(values[1] if len(values) > 1 else "")
     c2 = normalize_text(values[2] if len(values) > 2 else "")
@@ -118,10 +164,15 @@ def is_data_row(values) -> bool:
         return False
     if "yleismaksu ajalta" in joined:
         return False
+
     return True
 
 
 def get_amount_from_values(values):
+    """
+    Hakee kustannussumman riviltä.
+    Ensin yritetään sarake I (indeksi 8), sitten H (indeksi 7).
+    """
     if len(values) > 8:
         amount = to_float(values[8])
         if amount is not None:
@@ -136,6 +187,10 @@ def get_amount_from_values(values):
 
 
 def read_clean_rows(excel_path: str | Path) -> pd.DataFrame:
+    """
+    Lukee yhden tamperetaloYYYY.xlsx-tiedoston kaikki sheetit
+    ja palauttaa siistit datarivit yhtenä DataFramena.
+    """
     path = Path(excel_path)
     wb = load_workbook(path, data_only=True)
     rows = []
@@ -181,12 +236,18 @@ def read_clean_rows(excel_path: str | Path) -> pd.DataFrame:
 
 
 def classify_category(desc: str, code: str) -> str:
+    """
+    Luokittelee palvelurivin pääkategoriaan.
+    Näitä voi tarvittaessa täydentää myöhemmin uusilla avainsanoilla.
+    """
     text = normalize_text(f"{desc} {code}")
 
     if any(x in text for x in ["tpsy", "psyk", "terapia", "mielenter"]):
         return "Mielenterveys"
+
     if any(x in text for x in ["puhelin", "sposti", "sahkoposti", "neuvonta", "ohjaus", "eta"]):
         return "Etäpalvelut ja ohjaus"
+
     if any(
         x in text
         for x in [
@@ -196,18 +257,26 @@ def classify_category(desc: str, code: str) -> str:
         ]
     ):
         return "Laboratorio"
+
     if any(x in text for x in ["ekg", "tahystys", "rontgen", "kuvaus", "ultra", "magneetti"]):
         return "Tutkimukset ja toimenpiteet"
+
     if any(x in text for x in ["hoitaja", "tyofysioterapeutti", "tth"]):
         return "Hoitaja ja fysioterapia"
+
     if any(x in text for x in ["laakari", "erikois"]):
         return "Lääkäripalvelut"
+
     if any(x in text for x in ["kanta", "yleismaksu", "raportointi", "toimintasuunnitelma", "lausunto", "selvitys tyopaikalle"]):
         return "Hallinto ja työpaikkayhteistyö"
+
     return "Muut"
 
 
 def is_lab_row(desc: str, code: str) -> bool:
+    """
+    Tunnistaa laboratoriorivit joko koodin tai selosteen perusteella.
+    """
     code_text = normalize_text(code).upper().replace(" ", "")
     desc_text = normalize_text(desc)
 
@@ -215,4 +284,5 @@ def is_lab_row(desc: str, code: str) -> bool:
         return True
 
     return any(keyword in desc_text for keyword in LAB_DESC_KEYWORDS)
+
 
