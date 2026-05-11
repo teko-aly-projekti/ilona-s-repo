@@ -1,4 +1,11 @@
+# Tämä skripti hakee automaattisesti kaikki tiedostot,
+# joiden nimi on muotoa tamperetaloYYYY.xlsx.
+# Jos haluat lisätä uuden vuoden mukaan analyysiin,
+# lisää vain uusi tiedosto samaan kansioon samalla nimeämislogiikalla.
+
+
 from pathlib import Path
+import re
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -7,54 +14,70 @@ import seaborn as sns
 from helpers import classify_category, read_clean_rows
 
 
-EXCEL_2023 = "tamperetalo2023.xlsx"
-EXCEL_2024 = "tamperetalo2024.xlsx"
-EXCEL_2025 = "tamperetalo2025.xlsx"
+DATA_DIR = Path(".")
+FILE_PATTERN = "tamperetalo*.xlsx"
+AUTUMN_MONTHS = ["09", "10", "11"]
+MONTH_NAMES = {
+    "09": "syyskuu",
+    "10": "lokakuu",
+    "11": "marraskuu",
+}
 OUTPUT_DIR = "output"
 
 
-def load_year_data(file_path, year_label):
-    df = read_clean_rows(file_path).copy()
-    df["Vuosi"] = year_label
-    return df
+def find_year_files():
+    year_files = {}
+
+    for path in DATA_DIR.glob(FILE_PATTERN):
+        match = re.search(r"tamperetalo(20\d{2})\.xlsx$", path.name)
+        if match:
+            year = match.group(1)
+            year_files[year] = str(path)
+
+    return dict(sorted(year_files.items()))
+
+
+def load_all_years(year_files):
+    frames = []
+
+    for year, file_path in year_files.items():
+        df = read_clean_rows(file_path).copy()
+        df["Vuosi"] = year
+        frames.append(df)
+
+    if not frames:
+        raise ValueError("Yhtään tamperetaloYYYY.xlsx -tiedostoa ei löytynyt.")
+
+    return pd.concat(frames, ignore_index=True)
+
+
+def make_month_label(month_value):
+    year, month = month_value.split("-")
+    return f"{year} {MONTH_NAMES.get(month, month)}"
 
 
 def main():
     out = Path(OUTPUT_DIR)
     out.mkdir(exist_ok=True)
 
-    df_2023 = load_year_data(EXCEL_2023, "2023")
-    df_2024 = load_year_data(EXCEL_2024, "2024")
-    df_2025 = load_year_data(EXCEL_2025, "2025")
+    year_files = find_year_files()
+    print("Löydetyt tiedostot:", year_files)
 
-    df = pd.concat([df_2023, df_2024, df_2025], ignore_index=True)
+    df = load_all_years(year_files)
 
     df["Kategoria"] = df.apply(
         lambda r: classify_category(r["Seloste"], r["Koodi"]),
         axis=1,
     )
 
-    autumn_months = {
-        "2023-09", "2023-10", "2023-11",
-        "2024-09", "2024-10", "2024-11",
-        "2025-09", "2025-10", "2025-11",
+    autumn_month_values = {
+        f"{year}-{month}"
+        for year in year_files
+        for month in AUTUMN_MONTHS
     }
 
-    autumn = df[df["Kuukausi"].isin(autumn_months)].copy()
-
-    month_labels = {
-        "2023-09": "2023 syyskuu",
-        "2023-10": "2023 lokakuu",
-        "2023-11": "2023 marraskuu",
-        "2024-09": "2024 syyskuu",
-        "2024-10": "2024 lokakuu",
-        "2024-11": "2024 marraskuu",
-        "2025-09": "2025 syyskuu",
-        "2025-10": "2025 lokakuu",
-        "2025-11": "2025 marraskuu",
-    }
-
-    autumn["Kuukausi_label"] = autumn["Kuukausi"].map(month_labels)
+    autumn = df[df["Kuukausi"].isin(autumn_month_values)].copy()
+    autumn["Kuukausi_label"] = autumn["Kuukausi"].apply(make_month_label)
 
     pivot = (
         autumn.groupby(["Kuukausi_label", "Kategoria"])["Summa €"]
@@ -65,9 +88,9 @@ def main():
     )
 
     month_order = [
-        "2023 syyskuu", "2023 lokakuu", "2023 marraskuu",
-        "2024 syyskuu", "2024 lokakuu", "2024 marraskuu",
-        "2025 syyskuu", "2025 lokakuu", "2025 marraskuu",
+        f"{year} {MONTH_NAMES[month]}"
+        for year in year_files
+        for month in AUTUMN_MONTHS
     ]
     pivot = pivot.reindex(month_order)
 
@@ -78,7 +101,7 @@ def main():
 
     pivot.plot(kind="bar", stacked=True, ax=ax, colormap="tab20c")
 
-    ax.set_title("Syksyn työterveyspalveluiden kustannusjakauma 2023–2025")
+    ax.set_title("Syksyn työterveyspalveluiden kustannusjakauma")
     ax.set_xlabel("Kuukausi")
     ax.set_ylabel("Euroa")
     ax.legend(title="Palvelutyyppi", bbox_to_anchor=(1.02, 1), loc="upper left")
