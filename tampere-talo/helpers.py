@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import unicodedata
 from pathlib import Path
 
@@ -8,18 +9,18 @@ from openpyxl import load_workbook
 
 
 MONTH_MAP = {
-    "tammikuu": "2023-01",
-    "helmikuu": "2023-02",
-    "maaliskuu": "2023-03",
-    "huhtikuu": "2023-04",
-    "toukokuu": "2023-05",
-    "kesäkuu": "2023-06",
-    "heinäkuu": "2023-07",
-    "elokuu": "2023-08",
-    "syyskuu": "2023-09",
-    "lokakuu": "2023-10",
-    "marraskuu": "2023-11",
-    "joulukuu": "2023-12",
+    "tammikuu": "01",
+    "helmikuu": "02",
+    "maaliskuu": "03",
+    "huhtikuu": "04",
+    "toukokuu": "05",
+    "kesakuu": "06",
+    "heinakuu": "07",
+    "elokuu": "08",
+    "syyskuu": "09",
+    "lokakuu": "10",
+    "marraskuu": "11",
+    "joulukuu": "12",
 }
 
 LAB_CODE_ALLOWLIST = {
@@ -68,9 +69,16 @@ def to_float(value):
 
 def parse_month_from_sheet(sheet_name: str) -> str:
     normalized = normalize_text(sheet_name)
-    for key, value in MONTH_MAP.items():
-        if normalized.startswith(normalize_text(key)):
-            return value
+
+    year_match = re.search(r"20\d{2}", normalized)
+    if not year_match:
+        raise ValueError(f"Vuotta ei löytynyt sheetin nimestä: {sheet_name}")
+    year = year_match.group(0)
+
+    for month_name, month_num in MONTH_MAP.items():
+        if normalized.startswith(month_name):
+            return f"{year}-{month_num}"
+
     raise ValueError(f"Tuntematon kuukausi: {sheet_name}")
 
 
@@ -207,3 +215,4 @@ def is_lab_row(desc: str, code: str) -> bool:
         return True
 
     return any(keyword in desc_text for keyword in LAB_DESC_KEYWORDS)
+
